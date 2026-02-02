@@ -9,10 +9,8 @@ import { Badge } from '../components/ui/badge';
 import { Card } from '../components/ui/card';
 import { Label } from '../components/ui/label';
 import { Separator } from '../components/ui/separator';
-import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
-  const navigate = useNavigate();
   const [selectedIndustry, setSelectedIndustry] = useState<string>('All');
   const [minGrowth, setMinGrowth] = useState<number>(0);
 

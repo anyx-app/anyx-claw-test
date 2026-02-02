@@ -13,7 +13,7 @@ interface HeroChatProps {
 
 export function HeroChat({ title, subtitle }: HeroChatProps) {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState<ChatMessageProps[]>([
+  const [messages] = useState<ChatMessageProps[]>([
     {
       role: 'assistant',
       content: "Hi! I'm your Market Scout agent. Describe your ideal startup opportunity (e.g., 'Low competition SaaS in healthcare'), and I'll help you find matching trends.",
