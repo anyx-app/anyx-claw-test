@@ -1,4 +1,8 @@
 import { Trend } from '../data/mockTrends';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { TrendingUp, DollarSign } from 'lucide-react';
 
 interface TrendCardProps {
   trend: Trend;
@@ -11,52 +15,51 @@ export const TrendCard: React.FC<TrendCardProps> = ({ trend }) => {
     return `$${val}`;
   };
 
-  const signalColor = 
-    trend.signal_strength > 85 ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 
-    trend.signal_strength > 70 ? 'bg-amber-100 text-amber-800 border-amber-200' : 
-    'bg-slate-100 text-slate-800 border-slate-200';
+  const signalVariant = 
+    trend.signal_strength > 85 ? 'default' : 
+    trend.signal_strength > 70 ? 'secondary' : 
+    'outline';
 
   return (
-    <div className="group relative bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-100 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col h-full">
-      {/* Top Accent Line */}
-      <div className={`h-1 w-full ${trend.signal_strength > 80 ? 'bg-indigo-500' : 'bg-slate-200'}`} />
+    <Card className="group hover:shadow-design-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border bg-card">
+      <div className={cn(
+        "h-1 w-full", 
+        trend.signal_strength > 80 ? "bg-primary" : "bg-muted"
+      )} />
       
-      <div className="p-6 flex flex-col h-full">
-        {/* Header */}
-        <div className="flex justify-between items-start mb-4">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 uppercase tracking-wide">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start mb-2">
+          <Badge variant="outline" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
             {trend.industry}
-          </span>
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${signalColor}`}>
+          </Badge>
+          <Badge variant={signalVariant} className="font-bold">
             {trend.signal_strength} Signal
-          </span>
+          </Badge>
         </div>
-        
-        {/* Content */}
-        <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
+        <CardTitle className="text-xl group-hover:text-primary transition-colors">
           {trend.title}
-        </h3>
-        <p className="text-slate-500 text-sm leading-relaxed mb-6 flex-grow">
+        </CardTitle>
+        <CardDescription className="line-clamp-2">
           {trend.description}
-        </p>
-        
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-2 gap-4 pt-5 border-t border-slate-100 mt-auto bg-slate-50/50 -mx-6 -mb-6 px-6 py-4">
-          <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Market Size</p>
-            <p className="text-lg font-mono font-semibold text-slate-700">{formatMoney(trend.tam_valuation)}</p>
+        </CardDescription>
+      </CardHeader>
+      
+      <CardContent className="pt-0">
+        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-border">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
+              <DollarSign className="w-3 h-3" /> TAM
+            </span>
+            <span className="font-mono font-medium text-foreground">{formatMoney(trend.tam_valuation)}</span>
           </div>
-          <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Growth (CAGR)</p>
-            <div className="flex items-center">
-              <span className="text-lg font-mono font-semibold text-emerald-600">+{trend.growth_cagr}%</span>
-              <svg className="w-4 h-4 text-emerald-500 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" /> Growth
+            </span>
+            <span className="font-mono font-medium text-emerald-600">+{trend.growth_cagr}%</span>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
