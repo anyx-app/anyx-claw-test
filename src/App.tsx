@@ -1,9 +1,8 @@
 import { useState, useMemo } from 'react';
 import { MOCK_TRENDS } from './data/mockTrends';
 import { TrendCard } from './components/TrendCard';
-import { HeroGradient } from './components/recipes/heroes/HeroGradient';
+import { HeroChat } from './components/recipes/heroes/HeroChat';
 import { ThemeToggle } from './components/common/ThemeToggle';
-import { ThemeSelector } from './components/theme/ThemeSelector';
 import { Slider } from './components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Badge } from './components/ui/badge';
@@ -36,9 +35,6 @@ export default function App() {
             <span className="font-bold text-lg tracking-tight">Anyx<span className="text-primary">Claw</span> Scout</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="hidden sm:block">
-               <ThemeSelector />
-            </div>
             <ThemeToggle />
           </div>
         </div>
@@ -46,13 +42,10 @@ export default function App() {
 
       <main className="pb-20">
         
-        {/* Hero Section */}
-        <HeroGradient 
+        {/* Hero Section with Chat */}
+        <HeroChat 
           title="Spot the Next Unicorn"
-          subtitle="Curated market signals, valuation projections, and growth vectors. Don't build in the dark."
-          primaryCta="Explore Trends"
-          secondaryCta="Submit Signal"
-          onPrimaryClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
+          subtitle="Chat with our AI agent to brainstorm ideas, validate markets, and find high-growth trends before they go mainstream."
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">

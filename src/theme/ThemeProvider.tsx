@@ -29,9 +29,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       return legacyThemeMap[saved] || saved
     }
     
-    // Default to system preference
-    const system = getSystemTheme()
-    return legacyThemeMap[system] || 'default-light'
+    // Default to 'tech-dark' (overriding system preference for now)
+    return legacyThemeMap['tech-dark'] || 'tech-dark'
   })
 
   const theme = useMemo(() => getTheme(themeId), [themeId])
@@ -44,8 +43,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (saved) {
       initialTheme = legacyThemeMap[saved] || saved
     } else {
-      const system = getSystemTheme()
-      initialTheme = legacyThemeMap[system] || 'default-light'
+      // Default to tech-dark if nothing saved
+      initialTheme = 'tech-dark'
       localStorage.setItem(STORAGE_KEY, initialTheme)
     }
 
