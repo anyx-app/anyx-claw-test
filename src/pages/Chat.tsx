@@ -29,27 +29,56 @@ export default function ChatPage() {
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesis>(window.speechSynthesis);
 
-  // Initialize Speech Recognition
-  useEffect(() => {
+  const toggleVoice = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    // Stop AI speech if user wants to talk (Interrupt)
+    if (isSpeaking) {
+      stopSpeaking();
+    }
+
+    try {
+      recognitionRef.current?.start();
+      setIsListening(true);
+    } catch (error) {
+      console.error("Mic start error:", error);
+      // Re-initialize if it crashed (common on mobile)
+      initSpeech();
+      setTimeout(() => recognitionRef.current?.start(), 100);
+    }
+  };
+
+  const initSpeech = () => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US'; // Explicit lang helps iOS
       
-      recognitionRef.current.onresult = (event: any) => {
+      recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         handleSendMessage(transcript);
         setIsListening(false);
       };
 
-      recognitionRef.current.onerror = (event: any) => {
+      recognition.onerror = (event: any) => {
         console.error('Speech recognition error', event.error);
         setIsListening(false);
       };
       
-      recognitionRef.current.onend = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
+      recognitionRef.current = recognition;
     }
+  };
+
+  // Initialize Speech Recognition on Mount
+  useEffect(() => {
+    initSpeech();
   }, []);
 
   // Handle Initial Query from Home Page
