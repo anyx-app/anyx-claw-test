@@ -25,6 +25,7 @@ export default function ChatPage() {
   // Voice State
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default Muted
   const recognitionRef = useRef<any>(null);
   const synthesisRef = useRef<SpeechSynthesis>(window.speechSynthesis);
 
@@ -61,6 +62,7 @@ export default function ChatPage() {
   }, [initialQuery]);
 
   const speak = (text: string) => {
+    if (isMuted) return; // Don't speak if muted
     if (synthesisRef.current.speaking) {
       synthesisRef.current.cancel();
     }
@@ -68,6 +70,13 @@ export default function ChatPage() {
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
     synthesisRef.current.speak(utterance);
+  };
+
+  const toggleMute = () => {
+    if (isSpeaking) {
+      stopSpeaking();
+    }
+    setIsMuted(!isMuted);
   };
 
   const toggleVoice = () => {
@@ -166,12 +175,12 @@ export default function ChatPage() {
         <div className="font-semibold">Market Scout Agent</div>
         <div className="flex gap-2">
            <Button 
-            variant={isSpeaking ? "destructive" : "ghost"} 
+            variant={isMuted ? "ghost" : "default"} 
             size="icon" 
-            onClick={stopSpeaking}
-            disabled={!isSpeaking}
+            onClick={toggleMute}
+            className={!isMuted && isSpeaking ? "animate-pulse" : ""}
           >
-            {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-muted-foreground" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-muted-foreground" /> : <Volume2 className="w-4 h-4" />}
           </Button>
           <Button 
             variant={isListening ? "default" : "outline"} 
