@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Card } from '../components/ui/card';
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -96,10 +95,13 @@ export default function ChatPage() {
     setLoading(true);
 
     try {
+      // Don't send the ReactNode system messages to the API, filter them out
+      const apiMessages = messages.filter(m => typeof m.content === 'string');
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, userMsg] }),
+        body: JSON.stringify({ messages: [...apiMessages, userMsg] }),
       });
 
       const data = await response.json();
@@ -116,14 +118,26 @@ export default function ChatPage() {
       // Auto-speak the response
       speak(data.text);
 
-      // If trends are recommended, add a special "System" message to render cards
+      // If trends are recommended, add a system message with the cards as ReactNode content
       if (data.recommendedTrendIds && data.recommendedTrendIds.length > 0) {
         const recommendedCards = MOCK_TRENDS.filter(t => data.recommendedTrendIds.includes(t.id));
         
         if (recommendedCards.length > 0) {
           setMessages(prev => [...prev, {
-            role: 'data', // Custom role for UI rendering
-            content: JSON.stringify(recommendedCards),
+            role: 'system',
+            content: (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} 
+                animate={{ opacity: 1, y: 0 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 my-2 w-full"
+              >
+                {recommendedCards.map((t) => (
+                  <div key={t.id} className="scale-95 origin-top-left w-full text-left">
+                    <TrendCard trend={t} />
+                  </div>
+                ))}
+              </motion.div>
+            ),
             timestamp: new Date().toLocaleTimeString(),
           }]);
         }
@@ -135,43 +149,11 @@ export default function ChatPage() {
         role: 'assistant',
         content: "I lost connection to the market feed. Please check your API keys.",
         timestamp: new Date().toLocaleTimeString(),
-        status: 'error'
+        error: true
       }]);
     } finally {
       setLoading(false);
     }
-  };
-
-  // Custom renderer for the message list to support "Rich UI" (Cards)
-  const renderMessageList = () => {
-    return messages.map((msg, idx) => {
-      if (msg.role === 'data') {
-        const trends = JSON.parse(msg.content);
-        return (
-          <motion.div 
-            key={idx} 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4 pl-4 md:pl-12"
-          >
-            {trends.map((t: any) => (
-              <div key={t.id} className="scale-90 origin-top-left">
-                <TrendCard trend={t} />
-              </div>
-            ))}
-          </motion.div>
-        );
-      }
-      return <ChatMessageProps key={idx} {...msg} />; 
-      // Note: We need to use the actual ChatMessage component here, 
-      // but ChatInterface encapsulates the mapping. 
-      // We will need to customize ChatInterface or use a custom list here.
-      // For MVP speed, let's wrap ChatInterface but we need to inject the custom rendering logic 
-      // OR pass a custom component map. 
-      // Since ChatInterface is from the boilerplate, let's just use it for text 
-      // and inject the cards as a separate "message" type if supported, 
-      // OR easier: Build a custom chat view here reusing components.
-    });
   };
 
   return (
@@ -205,33 +187,12 @@ export default function ChatPage() {
       {/* Main Chat Area */}
       <div className="flex-1 overflow-hidden relative">
         <ChatInterface 
-          messages={messages.filter(m => m.role !== 'data')} // Hide raw data messages from standard view
+          messages={messages}
           onSendMessage={handleSendMessage}
           loading={loading}
-          enableVoice={true} // We have custom voice controls, but this enables the input icon too
+          enableVoice={true}
           className="h-full border-none rounded-none shadow-none"
-          // We need to inject the Rich UI cards. 
-          // Since ChatInterface doesn't easily support custom renderers without modifying it,
-          // Let's modify the ChatInterface to accept a 'renderMessage' prop OR 
-          // simpler: We modify ChatMessage to handle 'data' role? 
-          // For now, let's stick to standard text and I'll modify the ChatInterface component to handle 'data' role.
         />
-        
-        {/* Overlay for Cards (Hack for MVP to show cards at bottom if they exist) */}
-        {messages[messages.length - 1]?.role === 'data' && (
-           <div className="absolute bottom-20 left-0 right-0 p-4 bg-gradient-to-t from-background to-transparent">
-              <div className="max-w-4xl mx-auto">
-                 <div className="text-xs font-bold uppercase text-muted-foreground mb-2">Recommended Trends</div>
-                 <div className="flex gap-4 overflow-x-auto pb-4">
-                    {JSON.parse(messages[messages.length - 1].content).map((t: any) => (
-                      <div key={t.id} className="min-w-[300px]">
-                        <TrendCard trend={t} />
-                      </div>
-                    ))}
-                 </div>
-              </div>
-           </div>
-        )}
       </div>
     </div>
   );
