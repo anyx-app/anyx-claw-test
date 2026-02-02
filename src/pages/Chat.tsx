@@ -108,15 +108,8 @@ export default function ChatPage() {
     setIsMuted(!isMuted);
   };
 
-  const toggleVoice = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
-    } else {
-      recognitionRef.current?.start();
-      setIsListening(true);
-    }
-  };
+  // Removed duplicate toggleVoice definition
+
 
   const stopSpeaking = () => {
     synthesisRef.current.cancel();
