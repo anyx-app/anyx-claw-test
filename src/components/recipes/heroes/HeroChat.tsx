@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
-import { ChatInterface } from '../../ai/ChatInterface'
+import { ChatInterface } from '../ai/ChatInterface'
 import { GradientBackground } from '../effects/GradientBackground'
-import { ChatMessageProps } from '../../ai/ChatMessage'
+import { ChatMessageProps } from '../ai/ChatMessage'
 import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
 

@@ -15,10 +15,6 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 const STORAGE_KEY = 'theme'
 
-function getSystemTheme(): 'light' | 'dark' {
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [themeId, setThemeIdState] = useState<ThemeId>(() => {
     if (typeof window === 'undefined') return 'default-light'
