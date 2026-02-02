@@ -21,10 +21,13 @@ export const TrendCard: React.FC<TrendCardProps> = ({ trend }) => {
     'outline';
 
   return (
-    <Card className="group hover:shadow-design-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden border-border bg-card">
+    <Card className="group hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm relative">
+      {/* Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
       <div className={cn(
-        "h-1 w-full", 
-        trend.signal_strength > 80 ? "bg-primary" : "bg-muted"
+        "h-1 w-full relative z-10", 
+        trend.signal_strength > 80 ? "bg-gradient-to-r from-primary to-accent" : "bg-muted"
       )} />
       
       <CardHeader className="pb-3">

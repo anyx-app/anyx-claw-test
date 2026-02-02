@@ -71,46 +71,46 @@ export const techDark: ThemePreset = {
     tags: ['tech', 'ai', 'dark', 'neon', 'cyberpunk'],
   },
   tokens: {
-    background: '220 25% 8%',          // Very dark blue-gray
-    foreground: '210 40% 98%',
+    background: '240 10% 4%',          // Almost black, slight purple tint
+    foreground: '0 0% 100%',
     
-    card: '220 20% 12%',
-    cardForeground: '210 40% 98%',
+    card: '240 10% 6%',                // Slightly lighter
+    cardForeground: '0 0% 100%',
     
-    popover: '220 20% 12%',
-    popoverForeground: '210 40% 98%',
+    popover: '240 10% 6%',
+    popoverForeground: '0 0% 100%',
     
-    primary: '195 100% 50%',           // Cyan/electric blue
-    primaryForeground: '220 25% 8%',
+    primary: '250 100% 70%',           // Electric Purple/Lavender
+    primaryForeground: '240 10% 4%',
     
-    secondary: '220 20% 16%',
-    secondaryForeground: '210 40% 98%',
+    secondary: '240 5% 15%',
+    secondaryForeground: '0 0% 100%',
     
-    muted: '220 20% 16%',
-    mutedForeground: '210 20% 60%',
+    muted: '240 5% 15%',
+    mutedForeground: '240 5% 60%',
     
-    accent: '280 90% 60%',             // Vibrant purple
-    accentForeground: '220 25% 8%',
+    accent: '180 100% 50%',            // Cyan accent
+    accentForeground: '240 10% 4%',
     
-    destructive: '0 80% 65%',
-    destructiveForeground: '220 25% 8%',
+    destructive: '0 80% 60%',
+    destructiveForeground: '0 0% 100%',
     
-    success: '142 70% 50%',
-    successForeground: '220 25% 8%',
+    success: '150 100% 50%',
+    successForeground: '240 10% 4%',
     
-    warning: '38 92% 50%',
-    warningForeground: '220 25% 8%',
+    warning: '40 100% 60%',
+    warningForeground: '240 10% 4%',
     
-    border: '220 20% 20%',
-    input: '220 20% 20%',
-    ring: '195 100% 50%',
+    border: '240 5% 15%',
+    input: '240 5% 15%',
+    ring: '250 100% 70%',
     
-    radius: '0.75rem',
+    radius: '1rem',                    // Rounder corners
   },
   preview: {
-    background: '#0f1419',
-    primary: '#00ccff',
-    accent: '#b366ff',
+    background: '#0a0a0b',
+    primary: '#b8a3ff',
+    accent: '#00ffff',
   },
 }
 

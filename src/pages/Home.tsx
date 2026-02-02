@@ -30,9 +30,12 @@ export default function Home() {
       {/* Navbar */}
       <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🦞</span>
-            <span className="font-bold text-lg tracking-tight">Anyx<span className="text-primary">Claw</span> Scout</span>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl filter drop-shadow-md">🦞</span>
+            <span className="font-extrabold text-xl tracking-tight">
+              Anyx<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Claw</span>
+              <span className="ml-1 text-xs font-mono font-medium text-muted-foreground bg-secondary px-1.5 py-0.5 rounded-full border border-border">BETA</span>
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
