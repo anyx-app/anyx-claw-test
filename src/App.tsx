@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { MOCK_TRENDS } from './data/mockTrends';
 import { TrendCard } from './components/TrendCard';
 

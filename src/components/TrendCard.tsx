@@ -1,4 +1,3 @@
-import React from 'react';
 import { Trend } from '../data/mockTrends';
 
 interface TrendCardProps {
