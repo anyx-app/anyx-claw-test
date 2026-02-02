@@ -11,6 +11,7 @@ interface HeroChatProps {
 }
 
 export function HeroChat({ title, subtitle }: HeroChatProps) {
+  const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<ChatMessageProps[]>([
     {
       role: 'assistant',
@@ -19,7 +20,7 @@ export function HeroChat({ title, subtitle }: HeroChatProps) {
     }
   ])
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     // User message
     const userMsg: ChatMessageProps = {
       role: 'user',
@@ -27,15 +28,38 @@ export function HeroChat({ title, subtitle }: HeroChatProps) {
       timestamp: new Date().toLocaleTimeString(),
     }
     setMessages(prev => [...prev, userMsg])
+    setLoading(true)
 
-    // Mock AI response
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [...messages, userMsg] }),
+      })
+
+      const data = await response.json()
+
+      if (data.error) throw new Error(data.error)
+
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "That's a great angle! Based on your criteria, 'Personalized Longevity Protocols' and 'Mental Health Biomarkers' show strong signal. Check out the cards below for details on TAM and growth.",
+        content: data.text,
         timestamp: new Date().toLocaleTimeString(),
       }])
-    }, 1000)
+
+      // TODO: Filter grid based on data.recommendedTrendIds if needed
+
+    } catch (error) {
+      console.error(error)
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "I'm having trouble contacting headquarters. Please ensure the GEMINI_API_KEY is set in Vercel settings.",
+        timestamp: new Date().toLocaleTimeString(),
+        status: 'error'
+      }])
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -79,6 +103,7 @@ export function HeroChat({ title, subtitle }: HeroChatProps) {
             <ChatInterface 
               messages={messages}
               onSendMessage={handleSendMessage}
+              loading={loading}
               placeholder="Ask about a market trend..."
               suggestedPrompts={["High growth SaaS", "Undervalued AI niches"]}
               className="h-[450px] shadow-2xl border-border/50 bg-background/80 backdrop-blur-xl"
