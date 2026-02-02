@@ -21,12 +21,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
-      // Map legacy theme names to new IDs
+      // Force migration from default-light to tech-dark for the new branding
+      if (saved === 'default-light' || saved === 'light') {
+        return 'tech-dark'
+      }
       return legacyThemeMap[saved] || saved
     }
     
-    // Default to 'tech-dark' (overriding system preference for now)
-    return legacyThemeMap['tech-dark'] || 'tech-dark'
+    // Default to 'tech-dark'
+    return 'tech-dark'
   })
 
   const theme = useMemo(() => getTheme(themeId), [themeId])
@@ -37,7 +40,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     let initialTheme: string
 
     if (saved) {
-      initialTheme = legacyThemeMap[saved] || saved
+      // Force migration here too
+      if (saved === 'default-light' || saved === 'light') {
+        initialTheme = 'tech-dark'
+        localStorage.setItem(STORAGE_KEY, initialTheme)
+      } else {
+        initialTheme = legacyThemeMap[saved] || saved
+      }
     } else {
       // Default to tech-dark if nothing saved
       initialTheme = 'tech-dark'
