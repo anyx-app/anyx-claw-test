@@ -4,6 +4,7 @@ import { GradientBackground } from '../effects/GradientBackground'
 import { ChatMessageProps } from '../ai/ChatMessage'
 import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 interface HeroChatProps {
   title: string
@@ -11,7 +12,7 @@ interface HeroChatProps {
 }
 
 export function HeroChat({ title, subtitle }: HeroChatProps) {
-  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessageProps[]>([
     {
       role: 'assistant',
@@ -20,46 +21,9 @@ export function HeroChat({ title, subtitle }: HeroChatProps) {
     }
   ])
 
-  const handleSendMessage = async (text: string) => {
-    // User message
-    const userMsg: ChatMessageProps = {
-      role: 'user',
-      content: text,
-      timestamp: new Date().toLocaleTimeString(),
-    }
-    setMessages(prev => [...prev, userMsg])
-    setLoading(true)
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, userMsg] }),
-      })
-
-      const data = await response.json()
-
-      if (data.error) throw new Error(data.error)
-
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: data.text,
-        timestamp: new Date().toLocaleTimeString(),
-      }])
-
-      // TODO: Filter grid based on data.recommendedTrendIds if needed
-
-    } catch (error) {
-      console.error(error)
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: "I'm having trouble contacting headquarters. Please ensure the GEMINI_API_KEY is set in Vercel settings.",
-        timestamp: new Date().toLocaleTimeString(),
-        status: 'error'
-      }])
-    } finally {
-      setLoading(false)
-    }
+  const handleSendMessage = (text: string) => {
+    // Navigate to /chat with the initial query
+    navigate('/chat', { state: { initialQuery: text } });
   }
 
   return (
@@ -103,7 +67,6 @@ export function HeroChat({ title, subtitle }: HeroChatProps) {
             <ChatInterface 
               messages={messages}
               onSendMessage={handleSendMessage}
-              loading={loading}
               placeholder="Ask about a market trend..."
               suggestedPrompts={["High growth SaaS", "Undervalued AI niches"]}
               className="h-[450px] shadow-2xl border-border/50 bg-background/80 backdrop-blur-xl"
